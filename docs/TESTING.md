@@ -4,6 +4,10 @@ SwiftSave uses an Android download engine for site extraction. A successful Java
 unit test or APK build does not establish that a platform currently permits a
 particular download.
 
+GitHub Actions has verified Java compilation, 83 regression assertions, APK
+signatures, and bundled Python/FFmpeg/QuickJS. See `BUILD-RESULT.md` for the exact
+build. Device installation and live downloads remain untested.
+
 ## Local checks
 
 Run the project regression harness with a JDK:
@@ -52,5 +56,5 @@ an engine update and can temporarily prevent extraction.
 The build environment initially had Java 21 but no Android SDK or Gradle. Its
 execution sandbox blocked network sockets needed to fetch the tools and
 dependencies. The wrapper bootstrap failure is captured in `build-attempt.log`.
-Until a complete Android build and
-device checks are recorded, do not label the app or its site support as tested.
+The complete Android build succeeded remotely using GitHub Actions. Site support
+and device behavior still need the checks listed above.

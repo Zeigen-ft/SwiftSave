@@ -1,5 +1,14 @@
 # SwiftSave
 
+Installable APKs are available from the successful
+[GitHub Actions build](https://github.com/Zeigen-ft/SwiftSave/actions/runs/41113795641).
+
+- [ARM64 APK ZIP — most recent phones](https://github.com/Zeigen-ft/SwiftSave/actions/runs/41113795641/artifacts/13004278838)
+- [ARMv7 APK ZIP — older 32-bit phones](https://github.com/Zeigen-ft/SwiftSave/actions/runs/41113795641/artifacts/13005051785)
+
+Extract the ZIP, then open the `.apk` to install. Android 8 or newer is required.
+The private repository's downloads require your GitHub sign-in.
+
 A small Android downloader built from scratch. Paste a public video link from
 Facebook, X/Twitter, TikTok, or YouTube, or share a link to SwiftSave from another
 app. Choose video or MP3 audio, then save to `Downloads/SwiftSave`.
@@ -30,7 +39,7 @@ allow Gradle to sync, then choose **Build > Build App Bundle(s) / APK(s) > Build
 APK(s)**. The debug APK is signed automatically with a development key.
 
 For command-line and GitHub Actions instructions, see `BUILDING.md`. The workflow
-produces an APK artifact you can download from the Actions run. A successful
+produces APK artifacts you can download from the Actions run. A successful
 build is still followed by the device checks in `docs/TESTING.md`.
 
 ## Use
@@ -58,13 +67,10 @@ There is no playlist support, queue, login browser, or download history in this
 version. Video size is limited to 2 GB by the engine when its size is known;
 temporary processing needs additional free storage.
 
-The standalone Java checks for URL validation and error messages pass. At
-creation time this environment had no Android SDK/Gradle and its execution
-sandbox blocked network sockets needed to download them. The included genuine
-Gradle wrapper was tested and failed at the Gradle download step; see
-`docs/build-attempt.log`. **No APK build or live site download has been verified here.**
-The source is provided for an Android build and device validation, without
-claiming guaranteed compatibility with all links.
+The GitHub Actions build passed Java compilation, 83 regression assertions,
+APK signature verification, and checks that Python, FFmpeg, and QuickJS are
+included. See `docs/BUILD-RESULT.md` for the exact commit and artifacts.
+**Installation and live site downloads still need testing on a phone.**
 
 ## Development
 

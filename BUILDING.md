@@ -1,12 +1,10 @@
 # Build SwiftSave
 
-This source package has not been compiled into an APK in the current workspace.
-The workspace has Java, but no Android SDK or Gradle installation. The included
-wrapper was run with the configured proxy and a writable Gradle cache; its
-download failed with `java.net.SocketException: Operation not permitted` because
-the execution sandbox blocked network sockets. Requests for network access did
-not complete. See `docs/build-attempt.log` for the actual bootstrap failure.
-Maven dependency resolution and Android device testing remain unverified.
+Installable APKs were built successfully using GitHub Actions. See
+`docs/BUILD-RESULT.md` for the verified commit, checks, and download links.
+This workspace has Java but no Android SDK/Gradle, so local bootstrap remains
+blocked by sandbox network restrictions (`docs/build-attempt.log`). The remote
+build resolved dependencies and compiled the app; device tests remain outstanding.
 
 ## Requirements
 
@@ -19,9 +17,8 @@ The Android Gradle plugin is pinned to 8.9.2. The download engine and FFmpeg
 artifacts are pinned to `io.github.junkfood02.youtubedl-android` version `0.18.1`.
 The dependency coordinates and Java API usage were checked against the official
 upstream 0.18.1 README and source. This version bundles QuickJS for JavaScript
-extraction and Python 3.12.11. The artifacts could not be fetched in this workspace.
-The first connected build must resolve and compile these dependencies before
-the APK can be considered ready.
+extraction and Python 3.12.11. GitHub Actions resolved and compiled these
+dependencies, then verified the APK signatures and bundled native executables.
 
 ## Local build
 
@@ -56,8 +53,8 @@ included in `gradle/wrapper/LICENSE` and `gradle/wrapper/NOTICE`.
 The included `.github/workflows/build-apk.yml` installs the SDK, uses the wrapper, runs
 the URL/error regression suite, and builds signed debug APKs. Push the source to
 a repository you control, open **Actions → Build SwiftSave APK → Run workflow**,
-then download the `SwiftSave-debug-APKs` artifact from a successful run.
+then download `SwiftSave-arm64-APK` for most phones or `SwiftSave-armv7-APK`
+for older 32-bit phones. A larger `SwiftSave-universal-APK` is also available.
 
-The workflow has not been run here. A green workflow verifies compilation, not
-downloads from every supported website. Follow `docs/TESTING.md` on an ARM Android
-device before distributing the app.
+The workflow has passed. Compilation and packaging checks do not establish live
+downloads from every website. Follow `docs/TESTING.md` on an Android device.
