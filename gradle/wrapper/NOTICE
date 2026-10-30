@@ -1,0 +1,13 @@
+Gradle Wrapper
+Copyright 2015 the original author or authors.
+
+The Gradle wrapper scripts and bootstrap JAR were copied unchanged from the
+user-supplied Seal source archive (Seal-main/gradlew, gradlew.bat and
+gradle/wrapper/gradle-wrapper.jar). They are standard Gradle build bootstrap
+components, licensed under the Apache License, Version 2.0; see LICENSE here.
+
+The accompanying gradle-wrapper.properties was configured for Gradle 8.11.1
+to match SwiftSave's Android Gradle Plugin version. The JAR is the genuine
+uploaded bootstrap component, not a replacement or placeholder.
+
+Gradle upstream source: https://github.com/gradle/gradle

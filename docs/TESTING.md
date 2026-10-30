@@ -1,0 +1,56 @@
+# Validation
+
+SwiftSave uses an Android download engine for site extraction. A successful Java
+unit test or APK build does not establish that a platform currently permits a
+particular download.
+
+## Local checks
+
+Run the project regression harness with a JDK:
+
+```sh
+./tests/run.sh
+```
+
+It currently passes 83 regression assertions for link validation and user-facing
+error handling using the installed JDK compiler module, without an Android SDK. It does not execute Android UI, storage APIs, notifications, or downloads.
+
+With the Android SDK and dependency repositories reachable, run the Gradle build
+commands documented in the project README. Keep the full build log and the
+resulting APK together for review.
+
+## Device checks required before distribution
+
+Use an Android 8+ physical device. Check these on at least Android 8/9 and a
+recent Android release because shared storage and foreground-service behavior
+change across Android versions:
+
+- Cold launch; paste a link; receive text through the Android share sheet.
+- Download an accessible public video separately from Facebook, X/Twitter,
+  TikTok, and YouTube. Confirm both playback and audio in the saved result.
+- Repeat in audio mode and verify that the file contains playable audio.
+- Background the app and lock the device during a download. Confirm progress
+  remains visible and that completion appears only after saving succeeds.
+- Open Downloads and confirm the saved filename and MIME type are usable.
+- Deny notification permission; grant or deny storage permission on Android 8/9.
+  Confirm the app explains required storage access and does not report success
+  when saving failed.
+- Try an invalid link, unsupported host, private/deleted post, login-required
+  post, interrupted network, and insufficient free storage. Confirm useful
+  errors and that a later valid download still works.
+- Rotate or reopen the activity during a running job. Confirm it restores the
+  current progress and cannot start a duplicate job.
+- Update the engine; verify that network failure leaves the current engine
+  usable and provides a retry path.
+
+Use videos you own or have permission to download. Login-required or restricted
+content is outside the initial public-link feature set. Site changes can require
+an engine update and can temporarily prevent extraction.
+
+## Current environment limits
+
+The build environment initially had Java 21 but no Android SDK or Gradle. Its
+execution sandbox blocked network sockets needed to fetch the tools and
+dependencies. The wrapper bootstrap failure is captured in `build-attempt.log`.
+Until a complete Android build and
+device checks are recorded, do not label the app or its site support as tested.
