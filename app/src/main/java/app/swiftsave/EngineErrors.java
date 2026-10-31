@@ -21,7 +21,7 @@ public final class EngineErrors {
                     : "This site is limiting downloads. Wait a while, then try again.";
         }
         if (x && (message.contains("guest token") || message.contains("guest_token") || message.contains("guest api"))) {
-            return "X refused anonymous access to its video API. Update the engine and retry later; some posts need a signed-in account.";
+            return "X refused anonymous access to its video API. Use Sign in to X, or update the engine and retry later; some posts need account access.";
         }
         if (message.contains("private") || message.contains("login") || message.contains("log in")
                 || message.contains("sign in") || message.contains("sign-in") || message.contains("cookies")
@@ -31,13 +31,13 @@ public final class EngineErrors {
                 || message.contains("sensitive content") || message.contains("sensitive media")
                 || message.contains("captcha") || message.contains("not a bot")) {
             if (x) {
-                return "X requires sign-in or site verification for this post. SwiftSave doesn't support account cookies; try a post that plays while signed out.";
+                return "X requires sign-in or site verification for this post. Use Sign in to X, then retry. If already connected, refresh your X sign-in.";
             }
             return "This video needs a login or site verification. Try a public video; account cookies aren't supported.";
         }
         if (message.contains("requested format") || message.contains("no formats") || message.contains("no video formats")) {
             if (x) {
-                return "X returned no usable video format. Update the engine and try a public video; this can also happen when a post needs sign-in.";
+                return "X returned no usable video format. Update the engine or refresh your X sign-in, then retry; the post may still be unavailable.";
             }
             return "No downloadable video format was found. Update the download engine and try again.";
         }
@@ -51,7 +51,7 @@ public final class EngineErrors {
                     : "This video is unavailable. Check that the link opens in your browser.";
         }
         if (hasStatus(message, "403") || message.contains("forbidden")) {
-            return x ? "X refused this download. Update the engine and try again; the post may also require sign-in."
+            return x ? "X refused this download. Update the engine or refresh your X sign-in, then retry; the post may still be unavailable."
                     : "The site refused this download. Update the download engine, then try again.";
         }
         if (message.contains("javascript") || message.contains("js runtime") || message.contains("challenge")) {
@@ -63,7 +63,7 @@ public final class EngineErrors {
         }
         if (message.contains("no video") || message.contains("no media")) {
             if (x) {
-                return "X returned no video for this post. It may contain only photos or text, or require sign-in. Update the engine if public videos also fail.";
+                return "X returned no accessible video. The post may contain only photos or text, be unavailable, or require sign-in. Try Sign in to X or update the engine.";
             }
             return "No downloadable video was found. Check the link or update the download engine.";
         }

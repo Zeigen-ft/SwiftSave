@@ -2,6 +2,7 @@ package app.swiftsave;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.ClipboardManager;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowInsets;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.CookieManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -27,6 +29,8 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
 
 /** A compact, dependency-free interface for sharing and downloading a media link. */
 public final class MainActivity extends Activity {
@@ -46,6 +50,7 @@ public final class MainActivity extends Activity {
     private Button audioButton;
     private Button updateButton;
     private Button cancelButton;
+    private Button xAccountButton;
     private TextView statusText;
     private TextView statusLabel;
     private ProgressBar progressBar;
@@ -54,6 +59,7 @@ public final class MainActivity extends Activity {
     private boolean receiverRegistered;
     private String pendingUrl;
     private boolean pendingAudio;
+    private boolean clearingXSession;
 
     private final BroadcastReceiver statusReceiver = new BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
@@ -248,6 +254,13 @@ public final class MainActivity extends Activity {
         utilityRow.addView(updateButton, new LinearLayout.LayoutParams(0, dp(48), 1));
         page.addView(utilityRow);
 
+        xAccountButton = button("Sign in to X", false);
+        xAccountButton.setTextColor(TEAL);
+        xAccountButton.setTextSize(13);
+        xAccountButton.setOnClickListener(v -> manageXAccount());
+        page.addView(xAccountButton, margin(-1, dp(48), 0, 8, 0, 0));
+        refreshXAccountButton();
+
         TextView footer = text("Public, accessible links work best. Some posts require sign-in or may be unavailable. Save only media you have permission to download.", 11, Color.rgb(115, 141, 155));
         footer.setGravity(Gravity.CENTER);
         footer.setLineSpacing(dp(4), 1f);
@@ -322,6 +335,64 @@ public final class MainActivity extends Activity {
         startWork(service, "Checking for engine updates…");
     }
 
+    private boolean canManageXAccount() {
+        if (busy || DownloadService.isRunning() || clearingXSession) {
+            Toast.makeText(this, "Wait for the current task to finish.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    private void refreshXAccountButton() {
+        if (xAccountButton == null) return;
+        boolean enabled = !busy && !DownloadService.isRunning() && !clearingXSession;
+        if (clearingXSession) xAccountButton.setText("Signing out…");
+        else if (enabled) xAccountButton.setText(XSessionStore.isConnected(this) ? "X connected" : "Sign in to X");
+        xAccountButton.setEnabled(enabled);
+        xAccountButton.setAlpha(enabled ? 1f : 0.6f);
+    }
+
+    private void manageXAccount() {
+        if (!canManageXAccount()) return;
+        if (!XSessionStore.isConnected(this)) {
+            openXSignIn();
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle("X connected")
+                .setMessage("Your X session is stored only on this phone.")
+                .setNeutralButton("Open sign-in", (dialog, which) -> openXSignIn())
+                .setPositiveButton("Sign out", (dialog, which) -> signOutX())
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void openXSignIn() {
+        if (!canManageXAccount()) return;
+        startActivity(new Intent(this, XLoginActivity.class));
+    }
+
+    private void signOutX() {
+        if (!canManageXAccount()) return;
+        try {
+            XSessionStore.clear(this);
+        } catch (IOException unavailable) {
+            Toast.makeText(this, "Couldn't remove the X session. Try again.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        clearingXSession = true;
+        refreshXAccountButton();
+        CookieManager cookies = CookieManager.getInstance();
+        cookies.removeAllCookies(removed -> {
+            cookies.flush();
+            clearingXSession = false;
+            if (!isDestroyed()) {
+                refreshXAccountButton();
+                Toast.makeText(this, "Signed out of X.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private boolean startWork(Intent service, String message) {
         try {
             if (Build.VERSION.SDK_INT >= 26) startForegroundService(service);
@@ -364,6 +435,11 @@ public final class MainActivity extends Activity {
         restoreStatus();
     }
 
+    @Override protected void onResume() {
+        super.onResume();
+        refreshXAccountButton();
+    }
+
     @Override protected void onStop() {
         if (receiverRegistered) {
             unregisterReceiver(statusReceiver);
@@ -398,6 +474,7 @@ public final class MainActivity extends Activity {
         audioButton.setEnabled(!working);
         downloadButton.setAlpha(working ? 0.6f : 1f);
         downloadButton.setText(working ? "Please wait…" : audioOnly ? "Download audio  ↓" : "Download video  ↓");
+        refreshXAccountButton();
     }
 
     private void openDownloads() {

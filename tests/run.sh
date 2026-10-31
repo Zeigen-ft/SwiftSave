@@ -11,5 +11,12 @@ fi
 $COMPILER -encoding UTF-8 -d "$OUTPUT_DIR" \
     "$PROJECT_DIR/app/src/main/java/app/swiftsave/UrlPolicy.java" \
     "$PROJECT_DIR/app/src/main/java/app/swiftsave/EngineErrors.java" \
-    "$PROJECT_DIR/tests/RegressionTests.java"
+    "$PROJECT_DIR/app/src/main/java/app/swiftsave/XCookieData.java" \
+    "$PROJECT_DIR/tests/RegressionTests.java" \
+    "$PROJECT_DIR/tests/XCookieDataTests.java" \
+    "$PROJECT_DIR/tests/CookieExportFixture.java"
 java -cp "$OUTPUT_DIR" app.swiftsave.RegressionTests
+java -cp "$OUTPUT_DIR" app.swiftsave.XCookieDataTests
+if [ -n "${SWIFTSAVE_COOKIE_FIXTURE_PATH:-}" ]; then
+    java -cp "$OUTPUT_DIR" app.swiftsave.CookieExportFixture > "$SWIFTSAVE_COOKIE_FIXTURE_PATH"
+fi

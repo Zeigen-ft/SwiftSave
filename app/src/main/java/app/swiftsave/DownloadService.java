@@ -149,6 +149,8 @@ public final class DownloadService extends Service {
                     // X can return a real video followed by a non-video preview card.
                     // --no-playlist alone does not limit that extractor's result.
                     request.addOption("--playlist-items", "1");
+                    File cookies = XSessionStore.getCookieFile(this);
+                    if (cookies != null) request.addOption("--cookies", cookies.getAbsolutePath());
                 }
                 request.addOption("--no-mtime");
                 request.addOption("--restrict-filenames");

@@ -22,6 +22,12 @@ jobs:
         run: python -m pip install 'yt-dlp==2026.10.26'
       - name: Verify X first-video selection without network
         run: python tests/x_playlist_regression.py
+      - name: Verify on-device X session export without credentials or network
+        env:
+          SWIFTSAVE_COOKIE_FIXTURE_PATH: /tmp/swiftsave-x-fixture.txt
+        run: |
+          bash tests/run.sh
+          python tests/x_cookie_jar_regression.py "$SWIFTSAVE_COOKIE_FIXTURE_PATH"
       - name: Check X access using metadata only
         if: contains(github.event.head_commit.message, '[x probe]')
         env:

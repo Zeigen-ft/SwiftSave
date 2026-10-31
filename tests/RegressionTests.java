@@ -140,7 +140,7 @@ public final class RegressionTests {
         for (String failure : authenticationErrors) {
             String result = EngineErrors.friendly(failure, x);
             truth(result.contains("X requires sign-in or site verification"), "explicit X authentication failure gets accurate recovery guidance");
-            truth(result.contains("doesn't support account cookies"), "auth guidance does not promise an unsupported login feature");
+            truth(result.contains("Use Sign in to X") && result.contains("refresh your X sign-in"), "auth guidance points to the on-device sign-in and refresh flow");
         }
         truth(EngineErrors.friendly("This tweet is not available", x).contains("X post is unavailable"), "unavailable X post has a separate message");
         truth(!EngineErrors.friendly("This tweet is not available", x).equals(guest), "unavailable post and guest failure stay distinct");
