@@ -14,6 +14,8 @@ class QuietLogger:
 
 fixture = {
     "_type": "playlist", "id": "x-post", "title": "Synthetic post",
+    "extractor": "twitter", "extractor_key": "Twitter",
+    "webpage_url": "https://x.com/fixture/status/123",
     "entries": [
         {"id": "real-video", "title": "Synthetic video", "formats": [
             {"format_id": "mp4", "url": "https://media.invalid/fixture.mp4",
