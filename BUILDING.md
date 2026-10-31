@@ -42,6 +42,8 @@ its contents and size should be checked after building. Android 8.0 or newer is 
 The debug package is `app.swiftsave.debug` and is automatically signed by the
 Android build tools with a local debug key. It can be installed alongside Seal.
 It is intended for testing. A production release needs your own signing key.
+Fresh CI runners can generate a different debug key for each test build. If
+Android rejects an update, uninstall the previous SwiftSave test version first.
 
 The genuine Gradle wrapper scripts and bootstrap JAR came from the user's
 uploaded Seal archive. The wrapper downloads Gradle 8.11.1 on the first build;

@@ -1,10 +1,10 @@
 # SwiftSave
 
 Installable APKs are available from the successful
-[GitHub Actions build](https://github.com/Zeigen-ft/SwiftSave/actions/runs/41113795641).
+[GitHub Actions build](https://github.com/Zeigen-ft/SwiftSave/actions/runs/41151459413) of version 0.2.0.
 
-- [ARM64 APK ZIP — most recent phones](https://github.com/Zeigen-ft/SwiftSave/actions/runs/41113795641/artifacts/13004278838)
-- [ARMv7 APK ZIP — older 32-bit phones](https://github.com/Zeigen-ft/SwiftSave/actions/runs/41113795641/artifacts/13005051785)
+- [ARM64 APK ZIP — most recent phones](https://github.com/Zeigen-ft/SwiftSave/actions/runs/41151459413/artifacts/13022773303)
+- [ARMv7 APK ZIP — older 32-bit phones](https://github.com/Zeigen-ft/SwiftSave/actions/runs/41151459413/artifacts/13022623481)
 
 Extract the ZIP, then open the `.apk` to install. Android 8 or newer is required.
 The private repository's downloads require your GitHub sign-in.
@@ -15,12 +15,16 @@ app. Choose video or MP3 audio, then save to `Downloads/SwiftSave`.
 
 The interface uses native Android views. Extraction and conversion run on the
 phone using yt-dlp and FFmpeg through youtubedl-android. There is no hosted
-backend, analytics, account system, or API key.
+backend, analytics, SwiftSave account, or API key. Optional X sign-in stays on
+the device.
 
 ## What is included
 
 - One screen: link input, paste, video/audio, download, cancel, and progress.
 - Android share-sheet support for text links, including platform share messages.
+- Optional X sign-in using X's own HTTPS page, with a private on-device session
+  and a sign-out button. See `docs/X-DOWNLOADS.md`.
+- One-video selection for X posts, avoiding an upstream preview-card failure.
 - Background downloads with a foreground notification.
 - MP3 audio conversion and video format selection preferring H.264/AAC, up to
   1080p, and MP4 for broad Android playback compatibility.
@@ -54,22 +58,29 @@ On Android 13+, notification permission lets you see progress outside the app;
 downloads can still run if you decline. Android 8/9 needs storage permission.
 If a site starts failing, tap **Update engine**, then retry.
 
+For X posts that need an account, tap **Sign in to X**, complete the normal X
+login, then tap **Use X account**. Once SwiftSave shows **X connected**, retry
+the post. Use **X connected → Sign out** to remove the saved session.
+
 ## Limits and current verification
 
-Site support depends on yt-dlp and what each website makes available. Private,
-login-only, paid, DRM-protected, and other restricted videos are outside this
-version's scope. Account cookies are not included. Engine 0.18.1 includes a
+Site support depends on yt-dlp and what each website makes available. X supports
+your own authenticated session; other sites' account cookies are not supported.
+Signing in does not grant access to deleted posts or content your account cannot
+view. Paid and DRM-protected videos are outside this version's scope.
+Engine 0.18.1 includes a
 QuickJS JavaScript runtime for extraction. Some YouTube videos still require site
 verification and will fail with an explanation. Other sites can also require login or block
 automated downloads. Use public media you have permission to save.
 
-There is no playlist support, queue, login browser, or download history in this
+There is no playlist support, queue, or download history in this
 version. Video size is limited to 2 GB by the engine when its size is known;
 temporary processing needs additional free storage.
 
-The GitHub Actions build passed Java compilation, 83 regression assertions,
+The GitHub Actions build passed Java compilation, 247 regression assertions,
 APK signature verification, and checks that Python, FFmpeg, and QuickJS are
-included. See `docs/BUILD-RESULT.md` for the exact commit and artifacts.
+included. Real yt-dlp checks verified X first-video selection and the exported
+session's HTTPS/domain scoping. See `docs/BUILD-RESULT.md` for the exact commit and artifacts.
 **Installation and live site downloads still need testing on a phone.**
 
 ## Development

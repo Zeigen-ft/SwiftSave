@@ -4,7 +4,7 @@ SwiftSave uses an Android download engine for site extraction. A successful Java
 unit test or APK build does not establish that a platform currently permits a
 particular download.
 
-GitHub Actions has verified Java compilation, 83 regression assertions, APK
+GitHub Actions has verified Java compilation, 247 regression assertions, APK
 signatures, and bundled Python/FFmpeg/QuickJS. See `BUILD-RESULT.md` for the exact
 build. Device installation and live downloads remain untested.
 
@@ -16,8 +16,10 @@ Run the project regression harness with a JDK:
 ./tests/run.sh
 ```
 
-It currently passes 83 regression assertions for link validation and user-facing
-error handling using the installed JDK compiler module, without an Android SDK. It does not execute Android UI, storage APIs, notifications, or downloads.
+It currently passes 142 link/error assertions and 105 private-session assertions
+using a JDK, without an Android SDK. It does not execute Android UI, storage APIs,
+notifications, or downloads. CI also runs real yt-dlp offline checks for the X
+preview-card failure and session cookie-jar load/save/reload behavior.
 
 With the Android SDK and dependency repositories reachable, run the Gradle build
 commands documented in the project README. Keep the full build log and the
@@ -46,9 +48,14 @@ change across Android versions:
   current progress and cannot start a duplicate job.
 - Update the engine; verify that network failure leaves the current engine
   usable and provides a retry path.
+- Open **Sign in to X**, complete X's normal login and verification, then tap
+  **Use X account**. Confirm **X connected** appears and an accessible account-only
+  post can be downloaded. Verify that session management is disabled during a job.
+- Sign out of X and confirm the session is removed and the next X request is
+  anonymous. A connected session must not be attached to another site's request.
 
-Use videos you own or have permission to download. Login-required or restricted
-content is outside the initial public-link feature set. Site changes can require
+X account support is optional and does not grant access your account lacks.
+Other sites' account cookies remain unsupported. Site changes can require
 an engine update and can temporarily prevent extraction.
 
 ## Current environment limits
