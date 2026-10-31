@@ -54,6 +54,24 @@ public final class UrlPolicy {
         return false;
     }
 
+    /** X status links can yield an extra preview-card entry in yt-dlp. */
+    public static boolean isXUrl(String url) {
+        if (url == null) return false;
+        try {
+            URI uri = new URI(url);
+            String host = uri.getHost();
+            if (host == null || uri.getRawUserInfo() != null) return false;
+            String scheme = uri.getScheme();
+            if (!"https".equalsIgnoreCase(scheme) && !"http".equalsIgnoreCase(scheme)) return false;
+            host = host.toLowerCase(Locale.ROOT);
+            return host.equals("x.com") || host.endsWith(".x.com")
+                    || host.equals("twitter.com") || host.endsWith(".twitter.com")
+                    || host.equals("t.co");
+        } catch (URISyntaxException ignored) {
+            return false;
+        }
+    }
+
     private static String trimPunctuation(String value) {
         while (!value.isEmpty()) {
             char last = value.charAt(value.length() - 1);

@@ -10,6 +10,29 @@ permissions:
   contents: read
 
 jobs:
+  x-metadata-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install the current stable extraction engine
+        run: python -m pip install 'yt-dlp==2026.10.26'
+      - name: Verify X first-video selection without network
+        run: python tests/x_playlist_regression.py
+      - name: Check X access using metadata only
+        if: contains(github.event.head_commit.message, '[x probe]')
+        env:
+          X_PROBE_URL: https://x.com/i/web/status/2116122944376275285
+        run: python tools/probe_x_metadata.py
+      - uses: actions/upload-artifact@v4
+        if: contains(github.event.head_commit.message, '[x probe]')
+        with:
+          name: SwiftSave-X-metadata-results
+          path: x-metadata-results.json
+          if-no-files-found: error
   debug-apk:
     runs-on: ubuntu-latest
     timeout-minutes: 30

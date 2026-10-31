@@ -145,6 +145,11 @@ public final class DownloadService extends Service {
                 if (!workDirectory.mkdirs()) throw new IOException("Unable to create temporary download folder");
                 YoutubeDLRequest request = new YoutubeDLRequest(url);
                 request.addOption("--no-playlist");
+                if (UrlPolicy.isXUrl(url)) {
+                    // X can return a real video followed by a non-video preview card.
+                    // --no-playlist alone does not limit that extractor's result.
+                    request.addOption("--playlist-items", "1");
+                }
                 request.addOption("--no-mtime");
                 request.addOption("--restrict-filenames");
                 request.addOption("--socket-timeout", "25");
@@ -201,7 +206,7 @@ public final class DownloadService extends Service {
             success = true;
         } catch (Exception error) {
             finalStatus = cancelled ? "Cancelled. No incomplete files were saved."
-                    : EngineErrors.friendly(error.getMessage());
+                    : EngineErrors.friendly(error.getMessage(), url);
         } finally {
             processId = null;
             deleteTree(workDirectory);
